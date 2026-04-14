@@ -1,48 +1,44 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
 
     tools {
-        gradle 'GRADLE'  // Ensure this matches the name configured in Jenkins
         jdk 'JDK'
+        // Gradle tool not needed if using wrapper
     }
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/smshubham2005/MyMaventoGradle.git'
+                git branch: 'main',
+                url: 'https://github.com/smshubham2005/MyMaventoGradle.git'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'gradle build'  // Run Gradle build
+                sh './gradlew clean build'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'gradle test'  // Run unit tests
+                sh './gradlew test'
             }
         }
 
-        
-        
-       
         stage('Run Application') {
             steps {
-                // Start the JAR application
-                sh 'gradle run'
+                sh './gradlew run'
             }
         }
-
-        
     }
 
     post {
         success {
-            echo 'Build and deployment successful!'
+            echo 'Build and execution successful!'
         }
         failure {
-            echo 'Build failed!'
+            echo 'Something broke. Again.'
         }
     }
 }
